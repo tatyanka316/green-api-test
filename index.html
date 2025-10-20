@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GREEN-API Test Page</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background-color: #f4f4f4; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        h1 { text-align: center; color: #333; }
+        label { display: block; margin-top: 10px; font-weight: bold; }
+        input, textarea { width: 100%; padding: 8px; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; }
+        button { margin-top: 10px; padding: 10px 20px; background-color: #28a745; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+        #output { margin-top: 20px; background: #f9f9f9; padding: 10px; border: 1px solid #ddd; border-radius: 4px; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>GREEN-API Test Page</h1>
+        
+        <label for="idInstance">idInstance:</label>
+        <input type="text" id="idInstance" placeholder="Введите idInstance">
+        
+        <label for="apiTokenInstance">ApiTokenInstance:</label>
+        <input type="text" id="apiTokenInstance" placeholder="Введите ApiTokenInstance">
+        
+        <h2>Методы API</h2>
+        
+        <button onclick="callAPI('getSettings')">getSettings</button>
+        <button onclick="callAPI('getStateInstance')">getStateInstance</button>
+        
+        <label for="chatId">chatId (для sendMessage и sendFileByUrl):</label>
+        <input type="text" id="chatId" placeholder="Пример: 7XXXXXXXXXX@c.us">
+        
+        <label for="message">Message (для sendMessage):</label>
+        <input type="text" id="message" placeholder="Текст сообщения">
+        
+        <button onclick="sendMessage()">sendMessage</button>
+        
+        <label for="urlFile">URL File (для sendFileByUrl):</label>
+        <input type="text" id="urlFile" placeholder="https://example.com/file.jpg">
+        
+        <label for="fileName">File Name (для sendFileByUrl):</label>
+        <input type="text" id="fileName" placeholder="file.jpg">
+        
+        <label for="caption">Caption (для sendFileByUrl):</label>
+        <input type="text" id="caption" placeholder="Описание файла">
+        
+        <button onclick="sendFileByUrl()">sendFileByUrl</button>
+        
+        <h2>Ответ API</h2>
+        <textarea id="output" readonly rows="10" placeholder="Здесь появится ответ от API"></textarea>
+    </div>
+
+    <script>
+        const baseURL = 'https://api.green-api.com';
+
+        function getParams() {
+            const idInstance = document.getElementById('idInstance').value;
+            const apiTokenInstance = document.getElementById('apiTokenInstance').value;
+            if (!idInstance || !apiTokenInstance) {
+                alert('Введите idInstance и ApiTokenInstance!');
+                return null;
+            }
+            return { idInstance, apiTokenInstance };
+        }
+
+        function callAPI(method) {
+            const params = getParams();
+            if (!params) return;
+            
+            const url = `${baseURL}/waInstance${params.idInstance}/${method}/${params.apiTokenInstance}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('output').value = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('output').value = 'Ошибка: ' + error.message;
+                });
+        }
+
+        function sendMessage() {
+            const params = getParams();
+            if (!params) return;
+            
+            const chatId = document.getElementById('chatId').value;
+            const message = document.getElementById('message').value;
+            if (!chatId || !message) {
+                alert('Введите chatId и message!');
+                return;
+            }
+            
+            const url = `${baseURL}/waInstance${params.idInstance}/sendMessage/${params.apiTokenInstance}`;
+            const body = { chatId, message };
+            
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('output').value = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('output').value = 'Ошибка: ' + error.message;
+                });
+        }
+
+        function sendFileByUrl() {
+            const params = getParams();
+            if (!params) return;
+            
+            const chatId = document.getElementById('chatId').value;
+            const urlFile = document.getElementById('urlFile').value;
+            const fileName = document.getElementById('fileName').value;
+            const caption = document.getElementById('caption').value;
+            if (!chatId || !urlFile || !fileName) {
+                alert('Введите chatId, urlFile и fileName!');
+                return;
+            }
+            
+            const url = `${baseURL}/waInstance${params.idInstance}/sendFileByUrl/${params.apiTokenInstance}`;
+            const body = { chatId, urlFile, fileName, caption };
+            
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            })
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('output').value = JSON.stringify(data, null, 2);
+                })
+                .catch(error => {
+                    document.getElementById('output').value = 'Ошибка: ' + error.message;
+                });
+        }
+    </script>
+</body>
+</html>
+
+Найти еще
