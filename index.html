@@ -96,13 +96,13 @@
             </div>
             
             <div class="section">
-                <input type="text" id="chatId" placeholder="Введите chatId">
+                <input type="text" id="chatId" placeholder="Введите chatId (например, 79123456789@c.us)">
                 <input type="text" id="message" placeholder="Введите сообщение">
                 <button onclick="callAPI('sendMessage')">sendMessage</button>
             </div>
             
             <div class="section">
-                <input type="text" id="chatIdFile" placeholder="Введите chatId">
+                <input type="text" id="chatIdFile" placeholder="Введите chatId (например, 79123456789@c.us)">
                 <input type="text" id="urlFile" placeholder="Введите URL файла">
                 <input type="text" id="fileName" placeholder="Введите имя файла">
                 <button onclick="callAPI('sendFileByUrl')">sendFileByUrl</button>
@@ -116,7 +116,7 @@
     </div>
 
     <script>
-        const baseURL = 'https://1105.api.green-api.com';
+        const baseURL = 'https://api.green-api.com';
 
         function callAPI(method) {
             const idInstance = document.getElementById('idInstance').value;
